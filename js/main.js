@@ -1,7 +1,6 @@
 "use strict"
-console.log("Hello there!");
-import Chart from './chart.js';
-import ControlWidget from './control-widget.js';
+import Chart from './widgets/chart.js';
+import ControlWidget from './widgets/control-variable.js';
 
 // Create websocket
 const wsSocket = new WebSocket("ws://192.168.178.103:6789");
@@ -10,13 +9,6 @@ wsSocket.onopen = function (event) {
     console.log("Connection to controller established.");
 };
 
-/**
- * Data from controller: 
- * uint8: [err, state main, state sub, setting_idx, ...]
- * uint8: [err, state main, state sub, setting_idx, ...]
- * 
- * Data to UI
- */
 $(document).ready(function() {
     const valuesEl = document.getElementById("values");
     const tvCW = ControlWidget('cw1','Tidal Volume', 300, [200, 800], '',' mL');
