@@ -1,0 +1,61 @@
+div.mover {
+    background-color: white;
+    position: absolute;
+    z-index: 999;
+}
+
+canvas.canvas-chart {
+    background-color: white;
+    position: absolute;
+    z-index: 900;
+}
+
+
+/* AXES */
+/* ticks */
+.axis line {
+    stroke: #706f6f;
+    stroke-width: 1.0;
+}
+
+/* axis contour */
+.axis path {
+    stroke: #706f6f;
+    stroke-width: 1.0;
+}
+
+/* axis text */
+.axis text {
+    fill: #2b2929;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: 1em;
+}
+
+.axis .yRangeValue {
+    font-size: 1em;
+}
+
+/* LINE CHART */
+path.line-0 {
+    fill: none;
+    stroke: #ed3700;
+    stroke-width: 3.0;
+}
+
+path.line-1 {
+    fill: none;
+    stroke: #2b2929;
+    stroke-dasharray: 2;
+}
+
+path.line-2 {
+    fill: none;
+    stroke: #9c9c9c;
+    stroke-dasharray: 6;
+}
+
+.serie_label {
+    fill: #2b2929;
+    font-family: Georgia;
+    font-size: 80%;
+}
