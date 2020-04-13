@@ -1,3 +1,6 @@
+"use strict"
+import {clamp, pct} from "../common/helpers.js";
+
 /**
  * Control widget
  * 
@@ -41,9 +44,6 @@ export default (containerId, title, initialValue = 0, limits = [0, 100], prefix 
     limitMin.textContent = limits[0];
     limitMax.textContent = limits[1];
 
-    const clamp = (nr, min, max) => {
-        return Math.min(Math.max(nr, min), max);
-    };
     const setValue = (val) => {
         if (val === currentVal) {
             return;
@@ -52,8 +52,7 @@ export default (containerId, title, initialValue = 0, limits = [0, 100], prefix 
             valueText.textContent = `${prefix}${val}${postfix}`;
         }        
         if (meterBar) {
-            const pct = ((val - limits[0]) / (limits[1] - limits[0])) * 100;
-            meterBar.style.width = `${clamp(pct, 0, 100)}%`;
+            meterBar.style.width = `${clamp(pct(val, limits[0], limits[1]), 0, 100)}%`;
         }
         currentVal = val;
     };

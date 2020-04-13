@@ -17,10 +17,12 @@ $(document).ready(function() {
     const brCW = ControlWidget('cw4','Breathing Rate', 12, [10, 30], '', ' Bpm');    
     const ieCW = ControlWidget('cw5','I:E', 2, [1, 3], '1:', '');
 
-    const pChart = Chart("pchart", "Pressure (cmH2O)", { r: 1, g: 0.4, b: 0, a: 1});
-    const fChart = Chart("fchart", "Flow (sccm)", { r: 0.4, g: 1, b: 0, a: 1});
-    const vChart = Chart("vchart", "Volume (mL)", { r: 0, g: 0.4, b: 1, a: 1});
-    pChart.setYRange(80);
+    const timeWindow = 12;
+    const moverLength = 0.3;
+    const pChart = Chart("pchart", "Pressure (cmH2O)", { r: 1, g: 0.4, b: 0, a: 1}, timeWindow, 0, 255, moverLength);
+    const fChart = Chart("fchart", "Flow (sccm)", { r: 0.4, g: 1, b: 0, a: 1}, timeWindow, 0, 255, moverLength);
+    const vChart = Chart("vchart", "Volume (mL)", { r: 0, g: 0.4, b: 1, a: 1}, timeWindow, 1900, 3000, moverLength);
+    // pChart.setYRange(80);
 
     wsSocket.onmessage = function (event) {
         const data = JSON.parse(event.data);
@@ -29,7 +31,7 @@ $(document).ready(function() {
         }        
         pChart.update(data.value[0]);
         fChart.update(data.value[0]);
-        vChart.update(data.value[0]);
+        vChart.update(data.value[5]);
     }    
 
     let tv = 0;
