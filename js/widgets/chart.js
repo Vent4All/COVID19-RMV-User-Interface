@@ -18,7 +18,7 @@ import { scale, isEqualWithinThreshold } from "../common/helpers.js";
  * @param {*} yMax 
  * @param {*} moverLength in seconds
  */
-const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, timeWindow = 12, yMin = 0, yMax = 255, moverLength = 0.3) => {
+const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, timeWindow = 12, yMin = 0, yMax = 255, moverLength = 0.3, updateFrequency = 60) => {
     //------------------------1. PREPARATION------------------------//
     //-----------------------------SVG------------------------------// 
     // create elements (svg container, canvas, mover)
@@ -112,7 +112,6 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
         .text(yMax);
 
     // Setup mover    
-    const updateFrequency = 60; // fps
     const numX = timeWindow * updateFrequency; // Number of datapoints
 
     elCoords = coords();
@@ -160,7 +159,7 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
             if (isEqualWithinThreshold(elCoords.chart.width, elCoords.xaxis.width)) {
                 canvasEl.style.width = `${elCoords.xaxis.width}px`;
             }
-            
+
             glChartHeight = elCoords.xaxis.top - elCoords.yaxis.top - 1;
             glMoverHeight = elCoords.xaxis.bottom - elCoords.yaxis.top;
             if (isEqualWithinThreshold(elCoords.mover.height, glMoverHeight) || isEqualWithinThreshold(elCoords.chart.height, glChartHeight)) {

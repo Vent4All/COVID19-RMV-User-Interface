@@ -80,7 +80,7 @@ div.control-widget {
 }
 
 .settings-button {
-  padding: 20%;
+  padding: 5px;
 }
 
 .control-meter { 
@@ -113,3 +113,15 @@ div.control-widget {
   overflow: hidden;
 }
 
+div.fps-counter {
+  position: absolute;
+  width: 30px;
+  height: 20px;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(43, 43, 94, 0.75);
+  color: white;
+  padding: 4px;
+  text-align: center;
+  font-weight: bold;
+}
