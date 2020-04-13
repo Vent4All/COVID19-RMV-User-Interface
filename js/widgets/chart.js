@@ -119,7 +119,7 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
     const moverElWidth = (elCoords.xaxis.width / numX) * (moverLength * updateFrequency);
     moverEl.style.top = `${elCoords.yaxis.top}px`;
     moverEl.style.width = `${moverElWidth}px`;
-    let glMoverHeight = elCoords.xaxis.bottom - elCoords.yaxis.top + 1;
+    let glMoverHeight = elCoords.xaxis.bottom - elCoords.yaxis.top;
     moverEl.style.height = `${glMoverHeight}px`;
 
     // Setup webgl plot    
@@ -162,7 +162,7 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
             }
             
             glChartHeight = elCoords.xaxis.top - elCoords.yaxis.top - 1;
-            glMoverHeight = elCoords.xaxis.bottom - elCoords.yaxis.top + 1;
+            glMoverHeight = elCoords.xaxis.bottom - elCoords.yaxis.top;
             if (isEqualWithinThreshold(elCoords.mover.height, glMoverHeight) || isEqualWithinThreshold(elCoords.chart.height, glChartHeight)) {
                 moverEl.style.height = `${glMoverHeight}px`;
                 canvasEl.style.height = `${glChartHeight}px`;

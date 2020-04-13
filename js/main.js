@@ -24,14 +24,14 @@ $(document).ready(function() {
     const vChart = Chart("vchart", "Volume (mL)", { r: 0, g: 0.4, b: 1, a: 1}, timeWindow, 1900, 3000, moverLength);
     // pChart.setYRange(80);
 
+    let data = { value: [0, 1, 2, 3, 4, 5, 1900, 1, 2, 3, 4, 5] };
+    valuesEl.textContent=data.value.toString();
     wsSocket.onmessage = function (event) {
-        const data = JSON.parse(event.data);
+        data = JSON.parse(event.data);
         if (valuesEl) {
             valuesEl.textContent=data.value.toString();
         }        
-        pChart.update(data.value[0]);
-        fChart.update(data.value[0]);
-        vChart.update(data.value[5]);
+        
     }    
 
     let tv = 0;
@@ -39,6 +39,11 @@ $(document).ready(function() {
         // Controls
         tvCW.setValue(tv+200);
         tv = ++tv % (800-200);
+
+        // Set values
+        pChart.update(data.value[0]);
+        fChart.update(data.value[0]);
+        vChart.update(data.value[5]);
 
         // Charts
         pChart.updatePlot();
