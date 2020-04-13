@@ -19,7 +19,7 @@ $(document).ready(function () {
     const valuesEl = document.getElementById("values");
     const tvCW = ControlWidget('cw1', 'Tidal Volume', 300, [200, 800], '', ' mL');
     const fiCW = ControlWidget('cw2', 'FiO2', 21, [21, 100], '', '%');
-    const peCW = ControlWidget('cw3', 'PEEP', 5, [0, 25], '', ' mL');
+    const peCW = ControlWidget('cw3', 'PEEP', 5, [0, 25], '', ' cmH2O');
     const brCW = ControlWidget('cw4', 'Breathing Rate', 12, [10, 30], '', ' Bpm');
     const ieCW = ControlWidget('cw5', 'I:E', 2, [1, 3], '1:', '');
 
