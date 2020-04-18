@@ -1,6 +1,6 @@
 "use strict"
 /**
- * AnimationFrame class
+ * AnimationFrame
  * Limit the update frequency. Especially useful on resource-constrained clients like a Raspberry Pi.
  * Based on: https://gist.github.com/addyosmani/5434533
  */
@@ -70,13 +70,15 @@ export class AnimationFrame {
 export const clamp = (nr, min, max) => Math.min(Math.max(nr, min), max);
 
 /** 
-* This ES6(ECMAScript) function getQueryStringParameters takes url 
-* as parmater and returns
-* parameters name and value in JSON key value format 
-* @parameter {String} url 
-* (if url is not passed it takes the current url from window.location.href) 
-* 
-**/
+ * getQueryStringParameters
+ * 
+ * This ES6(ECMAScript) function getQueryStringParameters takes url  
+ * as parmater and returns
+ * parameters name and value in JSON key value format 
+ * @parameter {String} url 
+ * (if url is not passed it takes the current url from window.location.href) 
+ * 
+ **/
 export const getQueryStringParameters = url => {
     let query;
     if (url){
@@ -97,22 +99,31 @@ export const getQueryStringParameters = url => {
 };
 
 /**
- * 
+ * isEqualWithinThreshold
  * @param {*} a 
  * @param {*} b 
  */
 export const isEqualWithinThreshold = (a, b, th = 0.5) => Math.abs(a - b) > th;
 
 /**
- * 
+ * pct
  * @param {*} nr 
  * @param {*} min 
  * @param {*} max 
  */
 export const pct = (nr, min, max) => ((nr - min) / (max - min)) * 100;
 
+
+const htmlWhitelist = { 'sub' : {}};
 /**
- * 
+ * sanitizeString
+ * Sanitazation for any innerHTML actions
+ * @param {*} aString 
+ */
+export const sanitizeString = (aString) => FilterHTML.filter_html(aString, htmlWhitelist);
+
+/**
+ * scale
  * @param {*} inputY 
  * @param {*} yRange 
  * @param {*} xRange 
@@ -133,5 +144,6 @@ export default {
     getQueryStringParameters,
     isEqualWithinThreshold,
     pct,
+    sanitizeString,
     scale
 }

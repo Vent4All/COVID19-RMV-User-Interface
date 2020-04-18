@@ -100,7 +100,7 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
         .attr("x", -10)
         .attr("y", elCoords.yaxis.height)
         .style("text-anchor", "end")
-        .attr("class", "yRangeValue")
+        .attr("class", "yRangeValue-min")
         .text(yMin);
 
     yaxisEl.append("text")
@@ -108,7 +108,7 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
         .attr("x", -10)
         .attr("y", 5)
         .style("text-anchor", "end")
-        .attr("class", "yRangeValue")
+        .attr("class", "yRangeValue-max")
         .text(yMax);
 
     // Setup mover    
@@ -138,6 +138,8 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
     wglp.addLine(line);
     wglp.addLine(line2);
 
+    let yRange = yMax;
+
     const setLineValue = (i, val) => {
         if (i < line.numPoints) {
             line.setY(i, val);
@@ -145,10 +147,20 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
         }
     };
 
+    const rescaleGraph = (oldRange, newRange) => {
+        const factor = oldRange / newRange;
+        for (let i = 0; i < line.numPoints; i++) {
+            const oldVal = (line.getY(i) + 1) / 2;
+            const newVal = scale(oldVal * factor, [0, 1], [-1, 1]);
+            line.setY(i, newVal);
+            line2.setY(i, newVal + 0.02);
+        }
+    }
+
     let t = 0;
     return {
         update(value) {
-            const val = scale(value, [yMin, yMax], [-1, 1]);
+            const val = scale(value, [yMin, yRange], [-1, 1]);
             setLineValue(t, val);
 
             elCoords = coords();
@@ -189,8 +201,12 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
             // Update time instant
             t = (t + 1) % line.numPoints;
         },
-        setYRange: (value) => {
-            svg.select('text.yRangeValue').text(value);
+        setYRange: (newRange) => {
+            if (yRange !== newRange) {
+                rescaleGraph(yRange, newRange);
+                yRange = newRange;
+                yaxisEl.select('.yRangeValue-max').text(newRange);
+            }            
         },
         /**
          * Call this from a requestAnimationFrame callback
