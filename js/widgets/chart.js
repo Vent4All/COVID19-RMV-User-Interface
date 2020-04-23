@@ -18,7 +18,7 @@ import { scale, isEqualWithinThreshold } from "../common/helpers.js";
  * @param {*} yMax 
  * @param {*} moverLength in seconds
  */
-const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, timeWindow = 12, yMin = 0, yMax = 255, moverLength = 0.3, updateFrequency = 60) => {
+const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, timeWindow = 12, yMin = 0, yMax = 255, YRangeInterval = 10, moverLength = 0.3, updateFrequency = 60, showSP = false) => {
     //------------------------1. PREPARATION------------------------//
     //-----------------------------SVG------------------------------// 
     // create elements (svg container, canvas, mover)
@@ -131,20 +131,46 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
     const lineColor = new webglplotBundle.ColorRGBA(color.r, color.g, color.b, color.a);
     const line = new webglplotBundle.WebglLine(lineColor, numX);
     const line2 = new webglplotBundle.WebglLine(lineColor, numX);
+    const lineColorSP = new webglplotBundle.ColorRGBA(0.2, 0.2, 0.2, showSP ? 0.5 : 0.0);
+    const lineSP = new webglplotBundle.WebglLine(lineColorSP, numX);
+
     const wglp = new webglplotBundle.WebGLplot(canvasEl, new webglplotBundle.ColorRGBA(1, 0.1, 0.1, 1));
 
     line.lineSpaceX(-1, 2 / numX);
     line2.lineSpaceX(-1, 2 / numX);
+    lineSP.lineSpaceX(-1, 2 / numX);
     wglp.addLine(line);
     wglp.addLine(line2);
-
+    wglp.addLine(lineSP);
     let yRange = yMax;
+
+    const values = [];
+    values.length = line.numPoints;
+    const spValues = [];
+    spValues.length = line.numPoints;
 
     const setLineValue = (i, val) => {
         if (i < line.numPoints) {
             line.setY(i, val);
             line2.setY(i, val + 0.02);
         }
+    };
+
+    const setSPLineValue = (i, val) => {
+        if (i < lineSP.numPoints) {
+            lineSP.setY(i, val);
+        }
+    };
+
+    const resetGraph = () => {
+        for (let i = 0; i < line.numPoints; i++) {
+            line.setY(i, -1);
+            line2.setY(i, -1);
+            lineSP.setY(i, -1);
+            values[i] = 0;
+            spValues[i] = 0;
+        }
+        t = 0;
     };
 
     const rescaleGraph = (oldRange, newRange) => {
@@ -156,12 +182,53 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
             line2.setY(i, newVal + 0.02);
         }
     }
+    const rescaleSPGraph = (oldRange, newRange) => {
+        const factor = oldRange / newRange;
+        for (let i = 0; i < lineSP.numPoints; i++) {
+            const oldVal = (lineSP.getY(i) + 1) / 2;
+            const newVal = scale(oldVal * factor, [0, 1], [-1, 1]);
+            lineSP.setY(i, newVal);
+        }
+    }
+
+    const setYRange = (newRange) => {
+        if (yRange !== newRange) {
+            rescaleGraph(yRange, newRange);
+            rescaleSPGraph(yRange, newRange);
+            yRange = newRange;
+            yaxisEl.select('.yRangeValue-max').text(newRange);
+        }
+    }
+
+    const checkYRange = () => {
+        const maxVal = Math.max(Math.max(...values), Math.max(...spValues));
+        if (maxVal === 0) {
+            setYRange(YRangeInterval);
+        }
+        else if (maxVal > 0 && maxVal % YRangeInterval === 0) {
+            setYRange(maxVal);
+        }
+        else {
+            setYRange(maxVal - (maxVal % YRangeInterval) + YRangeInterval);
+        }
+    };
 
     let t = 0;
+    resetGraph();
     return {
-        update(value) {
+        update(value, sp = 0) {
+            // Save values
+            values[t] = value;
+            spValues[t] = sp;
+
+            // Determine ranges
+            checkYRange();
+
             const val = scale(value, [yMin, yRange], [-1, 1]);
             setLineValue(t, val);
+
+            const valSP = scale(sp, [yMin, yRange], [-1, 1]);
+            setSPLineValue(t, valSP);
 
             elCoords = coords();
             if (isEqualWithinThreshold(elCoords.yaxis.top, elCoords.mover.top)) {
@@ -201,18 +268,15 @@ const chart = (containerId, title, color = { r: 0.8, g: 0.2, b: 0.2, a: 1 }, tim
             // Update time instant
             t = (t + 1) % line.numPoints;
         },
-        setYRange: (newRange) => {
-            if (yRange !== newRange) {
-                rescaleGraph(yRange, newRange);
-                yRange = newRange;
-                yaxisEl.select('.yRangeValue-max').text(newRange);
-            }            
-        },
+        setYRange,
         /**
          * Call this from a requestAnimationFrame callback
          */
-        updatePlot() {
+        updatePlot: () => {
             wglp.update();
+        },
+        reset: () => {
+            resetGraph();
         }
     }
 }

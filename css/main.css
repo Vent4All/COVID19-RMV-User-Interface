@@ -125,3 +125,15 @@ div.fps-counter {
   text-align: center;
   font-weight: bold;
 }
+
+div.active-setting {
+  color: rgb(223, 134, 0);
+}
+
+div.active-setting .control-title {
+  text-decoration: underline;
+}
+
+div.active-setting .control-meter > span {
+  background-color: rgb(223, 134, 0);
+}

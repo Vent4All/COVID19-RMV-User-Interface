@@ -70,6 +70,14 @@ export default (containerId, title, initialValue = 0, limits = [0, 100], prefix 
         setValue,
         destroy: () => {
             containerEl.innerHTML = "";
+        },
+        select: (doSelect) => {
+            if (doSelect) {
+                containerEl.classList.add("active-setting");
+            }
+            else {
+                containerEl.classList.remove("active-setting");
+            }
         }
     }
 };
